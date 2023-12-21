@@ -26,7 +26,6 @@ public class Flight {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "arrivalAirportId")
     private Airport arrivalAirport;
-
     private LocalDateTime departureDateTime;
     private LocalDateTime returnDateTime;
     @Min(value = 0)

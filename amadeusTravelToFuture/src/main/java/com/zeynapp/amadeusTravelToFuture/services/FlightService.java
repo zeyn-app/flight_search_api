@@ -1,7 +1,6 @@
 package com.zeynapp.amadeusTravelToFuture.services;
 
-import com.zeynapp.amadeusTravelToFuture.dto.FlightRequest;
-import com.zeynapp.amadeusTravelToFuture.dto.FlightResponse;
+import com.zeynapp.amadeusTravelToFuture.dto.*;
 import com.zeynapp.amadeusTravelToFuture.exceptions.FlightException;
 import com.zeynapp.amadeusTravelToFuture.models.Airport;
 import com.zeynapp.amadeusTravelToFuture.models.Flight;
@@ -9,6 +8,7 @@ import com.zeynapp.amadeusTravelToFuture.repositories.FlightRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,6 +17,13 @@ public class FlightService {
     private final FlightRepository flightRepository;
     private final AirportService airportService;
 
+    public List<FlightResponse> getAll() {
+        List<Flight> flights = flightRepository.findAllByDepartureAirport_IsActiveTrueAndArrivalAirport_IsActiveTrue();
+        return flights.stream()
+                .map(this::getFlightResponse)
+                .toList();
+    }
+
     public FlightResponse create(FlightRequest flightRequest) {
         Flight flight = getFlight(flightRequest);
 
@@ -24,6 +31,55 @@ public class FlightService {
         checkDepartureDateTimeAndReturnDateTime(flight);
 
         return getFlightResponse((flightRepository.save(flight)));
+    }
+
+    public List<SearchFlightResponse> searchOneWayFlight(String from, String to, LocalDateTime departureDateTime) {
+        List<Flight> flights = flightRepository.findAllByDepartureAirport_CityAndArrivalAirport_CityAndDepartureDateTime
+                (from, to, departureDateTime);
+
+        return flights.stream()
+                .map(this::getOneWayFlightResponse)
+                .toList();
+    }
+
+    public List<SearchFlightResponse> searchTwoWayFlight(String from, String to, LocalDateTime departureDateTime,
+                                                         LocalDateTime arrivalDateTime) {
+        List<Flight> flights = flightRepository.findAllByDepartureAirport_CityAndArrivalAirport_CityAndDepartureDateTimeAndReturnDateTime(
+                from, to, departureDateTime, arrivalDateTime);
+
+        return flights.stream()
+                .map(this::getTwoWayFlightResponse)
+                .toList();
+    }
+
+    private SearchFlightResponse getTwoWayFlightResponse(Flight flight) {
+        return TwoWayFlightResponse.builder()
+                .departureAirport(flight.getDepartureAirport().getCity())
+                .arrivalAirport(flight.getArrivalAirport().getCity())
+                .departureDateTime(flight.getDepartureDateTime())
+                .departurePrice(flight.getPrice())
+                .returnAirport(flight.getArrivalAirport().getCity())
+                .returnDestinationAirport(flight.getDepartureAirport().getCity())
+                .returnDateTime(flight.getReturnDateTime())
+                .returnPrice(flight.getPrice())
+                .build();
+    }
+
+
+
+    private SearchFlightResponse getOneWayFlightResponse(Flight flight) {
+        return OneWayFlightResponse.builder()
+                .departureAirport(flight.getDepartureAirport().getCity())
+                .arrivalAirport(flight.getArrivalAirport().getCity())
+                .departureDateTime(flight.getDepartureDateTime())
+                .departurePrice(flight.getPrice())
+                .build();
+    }
+
+    public void delete(Long id) {
+        Flight flight = findById(id);
+        flight.setIsActive(false);
+        flightRepository.save(flight);
     }
 
     private void checkDepartureAndArrivalAirport(Flight flight) {
@@ -62,21 +118,7 @@ public class FlightService {
                 .build();
     }
 
-    public List<FlightResponse> getAll() {
-//        List<Flight> flights = flightRepository.findAll();
-        List<Flight> flights = flightRepository.findAllByDepartureAirport_IsActiveTrueAndArrivalAirport_IsActiveTrue();
-        return flights.stream()
-                .map(this::getFlightResponse)
-                .toList();
-    }
-
-    public void delete(Long id) {
-        Flight flight = findById(id);
-        flight.setIsActive(false);
-        flightRepository.save(flight);
-    }
-
     private Flight findById(Long id) {
-        return flightRepository.findById(id).orElseThrow(()-> new FlightException(FlightException.FLIGHT_NOT_FOUND));
+        return flightRepository.findById(id).orElseThrow(() -> new FlightException(FlightException.FLIGHT_NOT_FOUND));
     }
 }
