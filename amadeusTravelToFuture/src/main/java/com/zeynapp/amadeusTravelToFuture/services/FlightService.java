@@ -1,6 +1,6 @@
 package com.zeynapp.amadeusTravelToFuture.services;
 
-import com.zeynapp.amadeusTravelToFuture.dto.*;
+import com.zeynapp.amadeusTravelToFuture.dto.flightDto.*;
 import com.zeynapp.amadeusTravelToFuture.exceptions.FlightException;
 import com.zeynapp.amadeusTravelToFuture.models.Airport;
 import com.zeynapp.amadeusTravelToFuture.models.Flight;
@@ -66,7 +66,6 @@ public class FlightService {
     }
 
 
-
     private SearchFlightResponse getOneWayFlightResponse(Flight flight) {
         return OneWayFlightResponse.builder()
                 .departureAirport(flight.getDepartureAirport().getCity())
@@ -120,5 +119,17 @@ public class FlightService {
 
     private Flight findById(Long id) {
         return flightRepository.findById(id).orElseThrow(() -> new FlightException(FlightException.FLIGHT_NOT_FOUND));
+    }
+
+    public FlightResponse update(Long id, FlightUpdateRequest flightUpdateRequest) {
+        Flight flight = findById(id);
+        flight.setDepartureDateTime(flightUpdateRequest.getDepartureDateTime());
+        flight.setReturnDateTime(flightUpdateRequest.getReturnDateTime());
+        flight.setPrice(flightUpdateRequest.getPrice());
+
+        checkDepartureDateTimeAndReturnDateTime(flight);
+        System.out.println("getReturnDateTime: " + flight.getReturnDateTime());
+        System.out.println("getDepartureDateTime: " + flight.getDepartureDateTime());
+        return getFlightResponse(flightRepository.save(flight));
     }
 }

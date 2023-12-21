@@ -1,4 +1,4 @@
-package com.zeynapp.amadeusTravelToFuture.dto;
+package com.zeynapp.amadeusTravelToFuture.dto.flightDto;
 
 import lombok.Builder;
 import lombok.Data;

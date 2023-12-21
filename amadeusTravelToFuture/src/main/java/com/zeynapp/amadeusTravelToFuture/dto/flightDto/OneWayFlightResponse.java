@@ -1,4 +1,4 @@
-package com.zeynapp.amadeusTravelToFuture.dto;
+package com.zeynapp.amadeusTravelToFuture.dto.flightDto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

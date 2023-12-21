@@ -1,7 +1,7 @@
 package com.zeynapp.amadeusTravelToFuture.services;
 
-import com.zeynapp.amadeusTravelToFuture.dto.AirportRequest;
-import com.zeynapp.amadeusTravelToFuture.dto.AirportResponse;
+import com.zeynapp.amadeusTravelToFuture.dto.airportDto.AirportRequest;
+import com.zeynapp.amadeusTravelToFuture.dto.airportDto.AirportResponse;
 import com.zeynapp.amadeusTravelToFuture.exceptions.AirportException;
 import com.zeynapp.amadeusTravelToFuture.models.Airport;
 import com.zeynapp.amadeusTravelToFuture.repositories.AirportRepository;

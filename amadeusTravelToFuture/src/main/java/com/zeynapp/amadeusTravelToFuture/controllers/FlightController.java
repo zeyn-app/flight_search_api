@@ -1,8 +1,9 @@
 package com.zeynapp.amadeusTravelToFuture.controllers;
 
-import com.zeynapp.amadeusTravelToFuture.dto.FlightRequest;
-import com.zeynapp.amadeusTravelToFuture.dto.FlightResponse;
-import com.zeynapp.amadeusTravelToFuture.dto.SearchFlightResponse;
+import com.zeynapp.amadeusTravelToFuture.dto.flightDto.FlightRequest;
+import com.zeynapp.amadeusTravelToFuture.dto.flightDto.FlightResponse;
+import com.zeynapp.amadeusTravelToFuture.dto.flightDto.FlightUpdateRequest;
+import com.zeynapp.amadeusTravelToFuture.dto.flightDto.SearchFlightResponse;
 import com.zeynapp.amadeusTravelToFuture.services.FlightService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,11 +18,6 @@ import java.util.List;
 public class FlightController {
 
     private final FlightService flightService;
-
-    @PostMapping
-    public FlightResponse create(@Valid @RequestBody FlightRequest flightRequest) {
-        return flightService.create(flightRequest);
-    }
 
     @GetMapping
     public List<FlightResponse> getAll() {
@@ -40,6 +36,11 @@ public class FlightController {
         }
     }
 
+    @PostMapping
+    public FlightResponse create(@Valid @RequestBody FlightRequest flightRequest) {
+        return flightService.create(flightRequest);
+    }
+
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Long id) {
         flightService.delete(id);
@@ -47,5 +48,8 @@ public class FlightController {
     }
 
     // update
-
+    @PutMapping("/update/{id}")
+    public FlightResponse update( @PathVariable Long id, @RequestBody FlightUpdateRequest flightUpdateRequest){
+        return flightService.update(id, flightUpdateRequest);
+    }
 }

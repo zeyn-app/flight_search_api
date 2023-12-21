@@ -1,7 +1,7 @@
 package com.zeynapp.amadeusTravelToFuture.controllers;
 
-import com.zeynapp.amadeusTravelToFuture.dto.AirportRequest;
-import com.zeynapp.amadeusTravelToFuture.dto.AirportResponse;
+import com.zeynapp.amadeusTravelToFuture.dto.airportDto.AirportRequest;
+import com.zeynapp.amadeusTravelToFuture.dto.airportDto.AirportResponse;
 import com.zeynapp.amadeusTravelToFuture.services.AirportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
