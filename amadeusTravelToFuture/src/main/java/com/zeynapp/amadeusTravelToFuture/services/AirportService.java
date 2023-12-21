@@ -2,6 +2,7 @@ package com.zeynapp.amadeusTravelToFuture.services;
 
 import com.zeynapp.amadeusTravelToFuture.dto.AirportRequest;
 import com.zeynapp.amadeusTravelToFuture.dto.AirportResponse;
+import com.zeynapp.amadeusTravelToFuture.exceptions.AirportException;
 import com.zeynapp.amadeusTravelToFuture.models.Airport;
 import com.zeynapp.amadeusTravelToFuture.repositories.AirportRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class AirportService {
     private final AirportRepository airportRepository;
 
     public Airport findById(Long id){
-        return airportRepository.findById(id).orElseThrow();// add exception
+        return airportRepository.findById(id).orElseThrow(()-> new AirportException(AirportException.AIRPORT_NOT_FOUND));
     }
 
     public AirportResponse create(AirportRequest airportRequest) {
@@ -39,5 +40,11 @@ public class AirportService {
                 .id(airport.getId())
                 .city(airport.getCity())
                 .build();
+    }
+
+    public void delete(Long id) {
+        Airport airport = findById(id);
+        airport.setIsActive(false);
+        airportRepository.save(airport);
     }
 }

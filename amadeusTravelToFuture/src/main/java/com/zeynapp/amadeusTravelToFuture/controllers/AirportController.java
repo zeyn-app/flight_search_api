@@ -24,4 +24,10 @@ public class AirportController {
         return ResponseEntity.ok(airportResponse);
     }
 
+    @DeleteMapping("/delete")
+    public void delete(@RequestParam("id") Long id){
+        airportService.delete(id);
+        System.out.println("Airport removed successfully");
+    }
+
 }
