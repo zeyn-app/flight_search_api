@@ -88,8 +88,11 @@ public class FlightService {
     }
 
     private void checkDepartureDateTimeAndReturnDateTime(Flight flight) {
-        if (!flight.getDepartureDateTime().isBefore(flight.getReturnDateTime())) {
+        if (flight.getDepartureDateTime().isAfter(flight.getReturnDateTime())) {
             throw new FlightException(FlightException.DEPARTURE_DATE_CANNOT_BE_AFTER_RETURN_DATE);
+        }
+        if(flight.getDepartureDateTime().isEqual(flight.getReturnDateTime())){
+            throw new FlightException(FlightException.DEPARTURE_DATE_CANNOT_BE_THE_SAME_RETURN_DATE);
         }
     }
 
