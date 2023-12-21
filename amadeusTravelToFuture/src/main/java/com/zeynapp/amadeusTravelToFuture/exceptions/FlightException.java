@@ -5,6 +5,7 @@ public final class FlightException extends RuntimeException {
             = "Departure and arrival airports can not be the same";
     public static String DEPARTURE_DATE_CANNOT_BE_AFTER_RETURN_DATE
             = "Departure date can not be after the return date";
+    public static String FLIGHT_NOT_FOUND = "Flight not found exception";
 
     public FlightException(String message){
         super(message);

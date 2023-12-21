@@ -17,7 +17,6 @@ public class FlightService {
     private final FlightRepository flightRepository;
     private final AirportService airportService;
 
-
     public FlightResponse create(FlightRequest flightRequest) {
         Flight flight = getFlight(flightRequest);
 
@@ -64,9 +63,20 @@ public class FlightService {
     }
 
     public List<FlightResponse> getAll() {
-        List<Flight> flights = flightRepository.findAll();
+//        List<Flight> flights = flightRepository.findAll();
+        List<Flight> flights = flightRepository.findAllByDepartureAirport_IsActiveTrueAndArrivalAirport_IsActiveTrue();
         return flights.stream()
                 .map(this::getFlightResponse)
                 .toList();
+    }
+
+    public void delete(Long id) {
+        Flight flight = findById(id);
+        flight.setIsActive(false);
+        flightRepository.save(flight);
+    }
+
+    private Flight findById(Long id) {
+        return flightRepository.findById(id).orElseThrow(()-> new FlightException(FlightException.FLIGHT_NOT_FOUND));
     }
 }
