@@ -1,5 +1,7 @@
 package com.zeynapp.amadeusTravelToFuture.exceptions;
 
+import com.zeynapp.amadeusTravelToFuture.dto.BaseResponse;
+import com.zeynapp.amadeusTravelToFuture.dto.flightDto.FlightResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,12 +34,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(FlightException.class)
-    public ResponseEntity<?> flightExceptionHandler(FlightException exception){
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> flightExceptionHandler(FlightException exception){
+
+        var response = BaseResponse.<FlightResponse>builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(exception.getMessage())
+                .isSuccess(false)
+                .build();
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(AirportException.class)
-    public ResponseEntity<?> airportExceptionHandler(AirportException exception){
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.IM_USED);
+    public ResponseEntity<Object> airportExceptionHandler(AirportException exception){
+        var response = BaseResponse.<AirportException>builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(exception.getMessage())
+                .isSuccess(false)
+                .build();
+        return ResponseEntity.badRequest().body(response);
     }
 }

@@ -1,5 +1,6 @@
 package com.zeynapp.amadeusTravelToFuture.controllers;
 
+import com.zeynapp.amadeusTravelToFuture.dto.BaseResponse;
 import com.zeynapp.amadeusTravelToFuture.dto.flightDto.FlightRequest;
 import com.zeynapp.amadeusTravelToFuture.dto.flightDto.FlightResponse;
 import com.zeynapp.amadeusTravelToFuture.dto.flightDto.FlightUpdateRequest;
@@ -7,6 +8,8 @@ import com.zeynapp.amadeusTravelToFuture.dto.flightDto.SearchFlightResponse;
 import com.zeynapp.amadeusTravelToFuture.services.FlightService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,21 +23,43 @@ public class FlightController {
     private final FlightService flightService;
 
     @GetMapping
-    public List<FlightResponse> getAll() {
-        return flightService.getAll();
+    public ResponseEntity<BaseResponse<List<FlightResponse>>> getAll() {
+        List<FlightResponse> responseList = flightService.getAll();
+
+        BaseResponse<List<FlightResponse>> baseResponse = BaseResponse.<List<FlightResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responseList)
+                .isSuccess(true)
+                .build();
+
+        return ResponseEntity.ok(baseResponse);
     }
 
     @GetMapping("/search")
-    public List<SearchFlightResponse> search(@RequestParam(value = "from") String from,
-                                             @RequestParam(value = "to") String to,
-                                             @RequestParam(value = "departureDate") LocalDateTime departureDateTime,
-                                             @RequestParam(value = "returnDate", required = false) LocalDateTime returnDateTime) {
-        return flightService.search(from, to, departureDateTime, returnDateTime);
+    public ResponseEntity<BaseResponse<List<SearchFlightResponse>>> search(@RequestParam(value = "from") String from,
+                                                            @RequestParam(value = "to") String to,
+                                                            @RequestParam(value = "departureDate") LocalDateTime departureDateTime,
+                                                            @RequestParam(value = "returnDate", required = false) LocalDateTime returnDateTime) {
+        List<SearchFlightResponse> responseList = flightService.search(from, to, departureDateTime, returnDateTime);
+
+        BaseResponse<List<SearchFlightResponse>> baseResponse = BaseResponse.<List<SearchFlightResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responseList)
+                .isSuccess(true)
+                .build();
+        return ResponseEntity.ok(baseResponse);
     }
 
     @PostMapping
-    public FlightResponse create(@Valid @RequestBody FlightRequest flightRequest) {
-        return flightService.create(flightRequest);
+    public ResponseEntity<BaseResponse<FlightResponse>> create(@Valid @RequestBody FlightRequest flightRequest) {
+        FlightResponse response = flightService.create(flightRequest);
+
+        BaseResponse<FlightResponse> baseResponse = BaseResponse.<FlightResponse>builder()
+                .status(HttpStatus.CREATED.value())
+                .data(response)
+                .isSuccess(true)
+                .build();
+        return ResponseEntity.ok(baseResponse);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -45,7 +70,14 @@ public class FlightController {
 
     // update
     @PutMapping("/update/{id}")
-    public FlightResponse update( @PathVariable Long id, @RequestBody FlightUpdateRequest flightUpdateRequest){
-        return flightService.update(id, flightUpdateRequest);
+    public ResponseEntity<BaseResponse<FlightResponse>> update( @PathVariable Long id, @RequestBody FlightUpdateRequest flightUpdateRequest){
+        FlightResponse response = flightService.update(id, flightUpdateRequest);
+
+        BaseResponse<FlightResponse> baseResponse = BaseResponse.<FlightResponse>builder()
+                .status(HttpStatus.OK.value())
+                .data(response)
+                .isSuccess(true)
+                .build();
+        return ResponseEntity.ok(baseResponse);
     }
 }
