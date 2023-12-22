@@ -33,7 +33,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(FlightException.class)
-    public ResponseEntity<?> customerNotFoundExceptionHandler(FlightException exception){
+    public ResponseEntity<?> flightExceptionHandler(FlightException exception){
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(AirportException.class)
+    public ResponseEntity<?> airportExceptionHandler(AirportException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.IM_USED);
     }
 }

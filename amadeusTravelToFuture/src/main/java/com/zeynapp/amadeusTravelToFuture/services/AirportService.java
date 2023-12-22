@@ -20,11 +20,19 @@ public class AirportService {
     }
 
     public AirportResponse create(AirportRequest airportRequest) {
+        checkIfAirportExists(airportRequest);
+
         Airport airport = Airport.builder()
                 .city(airportRequest.getCity())
                 .build();
 
         return getAirportResponse(airportRepository.save(airport));
+    }
+
+    private void checkIfAirportExists(AirportRequest airportRequest) {
+        if(airportRepository.existsAirportByCity(airportRequest.getCity())){
+            throw new AirportException(AirportException.AIRPORT_EXISTS);
+        }
     }
 
     public List<AirportResponse> getAll() {
