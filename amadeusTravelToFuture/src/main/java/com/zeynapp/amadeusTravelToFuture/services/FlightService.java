@@ -135,4 +135,12 @@ public class FlightService {
         System.out.println("getDepartureDateTime: " + flight.getDepartureDateTime());
         return getFlightResponse(flightRepository.save(flight));
     }
+
+    public List<SearchFlightResponse> search(String from, String to, LocalDateTime departureDateTime, LocalDateTime returnDateTime) {
+        if (returnDateTime == null) {
+            return searchOneWayFlight(from, to, departureDateTime);
+        }
+            return searchTwoWayFlight(from, to, departureDateTime, returnDateTime);
+
+    }
 }

@@ -29,11 +29,7 @@ public class FlightController {
                                              @RequestParam(value = "to") String to,
                                              @RequestParam(value = "departureDate") LocalDateTime departureDateTime,
                                              @RequestParam(value = "returnDate", required = false) LocalDateTime returnDateTime) {
-        if (returnDateTime == null) {
-            return flightService.searchOneWayFlight(from, to, departureDateTime);
-        } else {
-            return flightService.searchTwoWayFlight(from, to, departureDateTime, returnDateTime);
-        }
+        return flightService.search(from, to, departureDateTime, returnDateTime);
     }
 
     @PostMapping
