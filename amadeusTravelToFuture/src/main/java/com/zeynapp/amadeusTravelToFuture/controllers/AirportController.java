@@ -18,6 +18,7 @@ public class AirportController {
     public List<AirportResponse> getAll(){
         return airportService.getAll();
     }
+
     @PostMapping("/create")
     public ResponseEntity<AirportResponse> create(@RequestBody AirportRequest airportRequest){
         AirportResponse airportResponse = airportService.create(airportRequest);

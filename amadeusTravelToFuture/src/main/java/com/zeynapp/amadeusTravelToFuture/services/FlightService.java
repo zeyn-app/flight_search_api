@@ -7,7 +7,6 @@ import com.zeynapp.amadeusTravelToFuture.models.Flight;
 import com.zeynapp.amadeusTravelToFuture.repositories.FlightRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,6 +23,32 @@ public class FlightService {
                 .toList();
     }
 
+    public List<SearchFlightResponse> search(String from, String to, LocalDateTime departureDateTime, LocalDateTime returnDateTime) {
+        if (returnDateTime == null) {
+            return searchOneWayFlight(from, to, departureDateTime);
+        }
+        return searchTwoWayFlight(from, to, departureDateTime, returnDateTime);
+
+    }
+
+    private List<SearchFlightResponse> searchOneWayFlight(String from, String to, LocalDateTime departureDateTime) {
+        List<Flight> flights = flightRepository.findAllByDepartureAirport_CityAndArrivalAirport_CityAndDepartureDateTime
+                (from, to, departureDateTime);
+
+        return flights.stream()
+                .map(this::getOneWayFlightResponse)
+                .toList();
+    }
+
+    private List<SearchFlightResponse> searchTwoWayFlight(String from, String to, LocalDateTime departureDateTime,
+                                                          LocalDateTime arrivalDateTime) {
+        List<Flight> flights = flightRepository.findAllByDepartureAirport_CityAndArrivalAirport_CityAndDepartureDateTimeAndReturnDateTime(
+                from, to, departureDateTime, arrivalDateTime);
+
+        return flights.stream()
+                .map(this::getTwoWayFlightResponse)
+                .toList();
+    }
     public FlightResponse create(FlightRequest flightRequest) {
         Flight flight = getFlight(flightRequest);
 
@@ -33,52 +58,22 @@ public class FlightService {
         return getFlightResponse((flightRepository.save(flight)));
     }
 
-    public List<SearchFlightResponse> searchOneWayFlight(String from, String to, LocalDateTime departureDateTime) {
-        List<Flight> flights = flightRepository.findAllByDepartureAirport_CityAndArrivalAirport_CityAndDepartureDateTime
-                (from, to, departureDateTime);
-
-        return flights.stream()
-                .map(this::getOneWayFlightResponse)
-                .toList();
-    }
-
-    public List<SearchFlightResponse> searchTwoWayFlight(String from, String to, LocalDateTime departureDateTime,
-                                                         LocalDateTime arrivalDateTime) {
-        List<Flight> flights = flightRepository.findAllByDepartureAirport_CityAndArrivalAirport_CityAndDepartureDateTimeAndReturnDateTime(
-                from, to, departureDateTime, arrivalDateTime);
-
-        return flights.stream()
-                .map(this::getTwoWayFlightResponse)
-                .toList();
-    }
-
-    private SearchFlightResponse getTwoWayFlightResponse(Flight flight) {
-        return TwoWayFlightResponse.builder()
-                .departureAirport(flight.getDepartureAirport().getCity())
-                .arrivalAirport(flight.getArrivalAirport().getCity())
-                .departureDateTime(flight.getDepartureDateTime())
-                .departurePrice(flight.getPrice())
-                .returnAirport(flight.getArrivalAirport().getCity())
-                .returnDestinationAirport(flight.getDepartureAirport().getCity())
-                .returnDateTime(flight.getReturnDateTime())
-                .returnPrice(flight.getPrice())
-                .build();
-    }
-
-
-    private SearchFlightResponse getOneWayFlightResponse(Flight flight) {
-        return OneWayFlightResponse.builder()
-                .departureAirport(flight.getDepartureAirport().getCity())
-                .arrivalAirport(flight.getArrivalAirport().getCity())
-                .departureDateTime(flight.getDepartureDateTime())
-                .departurePrice(flight.getPrice())
-                .build();
-    }
-
     public void delete(Long id) {
         Flight flight = findById(id);
         flight.setIsActive(false);
         flightRepository.save(flight);
+    }
+
+    public FlightResponse update(Long id, FlightUpdateRequest flightUpdateRequest) {
+        Flight flight = findById(id);
+        flight.setDepartureDateTime(flightUpdateRequest.getDepartureDateTime());
+        flight.setReturnDateTime(flightUpdateRequest.getReturnDateTime());
+        flight.setPrice(flightUpdateRequest.getPrice());
+
+        checkDepartureDateTimeAndReturnDateTime(flight);
+        System.out.println("getReturnDateTime: " + flight.getReturnDateTime());
+        System.out.println("getDepartureDateTime: " + flight.getDepartureDateTime());
+        return getFlightResponse(flightRepository.save(flight));
     }
 
     private void checkDepartureAndArrivalAirport(Flight flight) {
@@ -118,29 +113,31 @@ public class FlightService {
                 .returnDateTime(flight.getReturnDateTime())
                 .price(flight.getPrice())
                 .build();
-    }
 
+    }
     private Flight findById(Long id) {
         return flightRepository.findById(id).orElseThrow(() -> new FlightException(FlightException.FLIGHT_NOT_FOUND));
     }
 
-    public FlightResponse update(Long id, FlightUpdateRequest flightUpdateRequest) {
-        Flight flight = findById(id);
-        flight.setDepartureDateTime(flightUpdateRequest.getDepartureDateTime());
-        flight.setReturnDateTime(flightUpdateRequest.getReturnDateTime());
-        flight.setPrice(flightUpdateRequest.getPrice());
-
-        checkDepartureDateTimeAndReturnDateTime(flight);
-        System.out.println("getReturnDateTime: " + flight.getReturnDateTime());
-        System.out.println("getDepartureDateTime: " + flight.getDepartureDateTime());
-        return getFlightResponse(flightRepository.save(flight));
+    private SearchFlightResponse getTwoWayFlightResponse(Flight flight) {
+        return TwoWayFlightResponse.builder()
+                .departureAirport(flight.getDepartureAirport().getCity())
+                .arrivalAirport(flight.getArrivalAirport().getCity())
+                .departureDateTime(flight.getDepartureDateTime())
+                .departurePrice(flight.getPrice())
+                .returnAirport(flight.getArrivalAirport().getCity())
+                .returnDestinationAirport(flight.getDepartureAirport().getCity())
+                .returnDateTime(flight.getReturnDateTime())
+                .returnPrice(flight.getPrice())
+                .build();
     }
 
-    public List<SearchFlightResponse> search(String from, String to, LocalDateTime departureDateTime, LocalDateTime returnDateTime) {
-        if (returnDateTime == null) {
-            return searchOneWayFlight(from, to, departureDateTime);
-        }
-            return searchTwoWayFlight(from, to, departureDateTime, returnDateTime);
-
+    private SearchFlightResponse getOneWayFlightResponse(Flight flight) {
+        return OneWayFlightResponse.builder()
+                .departureAirport(flight.getDepartureAirport().getCity())
+                .arrivalAirport(flight.getArrivalAirport().getCity())
+                .departureDateTime(flight.getDepartureDateTime())
+                .departurePrice(flight.getPrice())
+                .build();
     }
 }

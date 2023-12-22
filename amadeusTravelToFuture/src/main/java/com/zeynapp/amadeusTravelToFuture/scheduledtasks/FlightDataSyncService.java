@@ -6,7 +6,6 @@ import com.zeynapp.amadeusTravelToFuture.repositories.AirportRepository;
 import com.zeynapp.amadeusTravelToFuture.repositories.FlightRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 

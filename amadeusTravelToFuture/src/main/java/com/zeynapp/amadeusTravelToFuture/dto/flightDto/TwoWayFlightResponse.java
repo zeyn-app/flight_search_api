@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
-
 import java.time.LocalDateTime;
 @SuperBuilder
 @Data

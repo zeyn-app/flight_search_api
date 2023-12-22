@@ -15,8 +15,12 @@ import java.util.List;
 public class AirportService {
     private final AirportRepository airportRepository;
 
-    public Airport findById(Long id){
-        return airportRepository.findById(id).orElseThrow(()-> new AirportException(AirportException.AIRPORT_NOT_FOUND));
+    public List<AirportResponse> getAll() {
+        List<Airport> airports = airportRepository.findAll();
+
+        return airports.stream()
+                .map(this::getAirportResponse)
+                .toList();
     }
 
     public AirportResponse create(AirportRequest airportRequest) {
@@ -29,18 +33,20 @@ public class AirportService {
         return getAirportResponse(airportRepository.save(airport));
     }
 
+    public void delete(Long id) {
+        Airport airport = findById(id);
+        airport.setIsActive(false);
+        airportRepository.save(airport);
+    }
+
+    public Airport findById(Long id){
+        return airportRepository.findById(id).orElseThrow(()-> new AirportException(AirportException.AIRPORT_NOT_FOUND));
+    }
+
     private void checkIfAirportExists(AirportRequest airportRequest) {
         if(airportRepository.existsAirportByCity(airportRequest.getCity())){
             throw new AirportException(AirportException.AIRPORT_EXISTS);
         }
-    }
-
-    public List<AirportResponse> getAll() {
-        List<Airport> airports = airportRepository.findAll();
-
-        return airports.stream()
-                .map(this::getAirportResponse)
-                .toList();
     }
 
     private AirportResponse getAirportResponse(Airport airport){
@@ -48,11 +54,5 @@ public class AirportService {
                 .id(airport.getId())
                 .city(airport.getCity())
                 .build();
-    }
-
-    public void delete(Long id) {
-        Airport airport = findById(id);
-        airport.setIsActive(false);
-        airportRepository.save(airport);
     }
 }
