@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ import java.util.List;
 public class FlightController {
 
     private final FlightService flightService;
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<BaseResponse<List<FlightResponse>>> getAll() {
         List<FlightResponse> responseList = flightService.getAll();
@@ -35,6 +36,7 @@ public class FlightController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/search")
     public ResponseEntity<BaseResponse<List<SearchFlightResponse>>> search(@RequestParam(value = "from") String from,
                                                             @RequestParam(value = "to") String to,
@@ -50,6 +52,7 @@ public class FlightController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BaseResponse<FlightResponse>> create(@Valid @RequestBody FlightRequest flightRequest) {
         FlightResponse response = flightService.create(flightRequest);
@@ -62,6 +65,7 @@ public class FlightController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Long id) {
         flightService.delete(id);
@@ -69,6 +73,7 @@ public class FlightController {
     }
 
     // update
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<BaseResponse<FlightResponse>> update( @PathVariable Long id, @RequestBody FlightUpdateRequest flightUpdateRequest){
         FlightResponse response = flightService.update(id, flightUpdateRequest);

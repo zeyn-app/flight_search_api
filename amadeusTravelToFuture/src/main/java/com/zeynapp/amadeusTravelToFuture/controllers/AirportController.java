@@ -7,6 +7,7 @@ import com.zeynapp.amadeusTravelToFuture.services.AirportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AirportController {
     private final AirportService airportService;
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<BaseResponse<List<AirportResponse>>> getAll(){
         List<AirportResponse> responseList = airportService.getAll();
@@ -29,6 +32,7 @@ public class AirportController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<BaseResponse<AirportResponse>> create(@RequestBody AirportRequest airportRequest){
         AirportResponse airportResponse = airportService.create(airportRequest);
@@ -42,6 +46,7 @@ public class AirportController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
     public void delete(@RequestParam("id") Long id){
         airportService.delete(id);
