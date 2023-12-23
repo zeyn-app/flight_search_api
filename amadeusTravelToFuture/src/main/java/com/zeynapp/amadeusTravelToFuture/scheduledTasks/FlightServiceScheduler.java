@@ -1,4 +1,4 @@
-package com.zeynapp.amadeusTravelToFuture.scheduledtasks;
+package com.zeynapp.amadeusTravelToFuture.scheduledTasks;
 
 import com.zeynapp.amadeusTravelToFuture.models.Airport;
 import com.zeynapp.amadeusTravelToFuture.models.Flight;
@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class FlightDataSyncService {
+public class FlightServiceScheduler {
 
     private final FlightRepository flightRepository;
     private final AirportRepository airportRepository;
 
-    public FlightDataSyncService(FlightRepository flightRepository, AirportRepository airportRepository) {
+    public FlightServiceScheduler(FlightRepository flightRepository, AirportRepository airportRepository) {
         this.flightRepository = flightRepository;
         this.airportRepository = airportRepository;
     }
