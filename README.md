@@ -1,48 +1,41 @@
 # Case Study: Flight Search API (Backend Developer)
 
-## Açıklama
-Bir uçuş arama uygulaması için backend API geliştirilecek.
 
-### **Beklentiler:**
-- **Data Modeling:** Veritabanında saklanacak bilgilerin tasarlanması ve modellenmesi gerekiyor.
-    - Veritabanı olarak herhangi bir relational (SQL) ya da NoSQL database kullanılabilir.
-    - Saklanacak bilgiler:
-      
-        *Uçuşlar*
-        - ID
-        - Kalkış havaalanı
-        - Varış havaalanı
-        - Kalkış tarih/saat
-        - Dönüş tarih/saat
-        - Fiyat
-        
-        *Havaalanları*
-        - ID
-        - Şehir
+## Features
+- Implement a CRUD (Create, Read, Update, Delete - **Soft Delete**) structure for managing data.
 
-- **CRUD yapısı kurgulanmalı:** CRUD (Create, Read, Update, Delete) yapısı, bir veritabanı üzerinde en yaygın olarak gerçekleştirilen temel işlemleri temsil eder.
-    - Bu yapının kurgulanması, verilerin tutarlı ve organize bir şekilde yönetilmesini sağlar. Bu sayede kullanıcılar gerektiği gibi veri oluşturabilir, okuyabilir, güncelleyebilir ve silebilir.
-    - CRUD yapısının uygulanacağı kaynaklar.
-        - Uçuşlar
-        - Havaalanları
+- Implement Basic Authentication to verify user identity and control access to the system.
 
-- **Search API**
-    - Verilen kalkış yeri, varış yeri, kalkış tarihi ve dönüş tarihine uygun uçuşları listeleyen bir API endpoint yapılmalı.
-    - Dönüş tarihi verilmediyse tek yönlü uçuş, verildiyse çift yönlü uçuştur.
-    - Tek yönlü uçuş için tek uçuş bilgisi, çift yönlü uçuş için iki uçuş bilgisi verilmeli.
+    - User: 
+        - Username: "xx"
+        - Password: "xx"
+        - Role: "USER"
+    - Admin: 
+        - Username: "admin"
+        - Password: "admin"
+        - Role: "ADMIN"
 
-- **REST ile dışarıya servis sunulmalı:** REST mimarisi ile dışarıya servis sunmak, uygulamanın diğer sistemlerle etkileşim kurabilmesini sağlar. Bu, veri alışverişini kolaylaştırır ve genel olarak
-sistemler arası entegrasyonu mümkün kılar.
+## Installation
 
-- **Java kullanılmalı** (Spring/Spring Boot vb.)
+1. Clone the repository to your local machine.
+2. Navigate to the project root directory.
+3. Configure your application properties in `src/main/resources/application.properties`.
+4. Make sure you have Java and Maven installed.
+5. Run `mvn clean install` to build the project.
 
-- **Authentication yapısı olmalı:**
-    - Authentication yapısı, kullanıcının kimliğini doğrulamak ve yetki vermek için kullanılır. Bu yapı sistemlerin daha güvenli olmasını sağlar. İstenilen authentication mimarisi kullanılabilir.
+## Usage
 
-- **Scheduled background jobları:** Her gün third-party bir API’a istek atarak uçuş bilgilerini alan ve database’e kaydeden bir scheduled job yapılmalı.
-    - Gerçek bir third-party API kullanılmayacak. Mock bir API isteği yapılıp yapay veri
-üretilerek çalışılabilir.
+1. Run the Spring Boot application using `mvn spring-boot:run` or your preferred IDE.
+2. Access the API endpoints using a tool like Postman or your browser.
+3. Refer to the API documentation for more details on available endpoints.
 
-- **Git versiyon sistemi kullanılmalı.** Proje GitHub’a yüklenilecek.
+## API Documentation
 
-- **Dokümantasyon:** Swagger ile API dokümantasyonu yapılmalı
+API documentation is available at http://localhost:8080/swagger-ui/index.html when the application is running. This documentation provides detailed information about the available endpoints, request parameters, and responses.
+
+## Author
+
+Zeynep Özdemir
+
+- GitHub: [zeynepozdemir](https://github.com/zeyn-app)
+- LinkedIn: [zeynepozdemir](linkedin.com/in/zzeynepozdemir)
