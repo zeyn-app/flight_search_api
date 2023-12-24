@@ -5,15 +5,17 @@ import com.zeynapp.amadeusTravelToFuture.dto.airportDto.AirportResponse;
 import com.zeynapp.amadeusTravelToFuture.exceptions.AirportException;
 import com.zeynapp.amadeusTravelToFuture.models.Airport;
 import com.zeynapp.amadeusTravelToFuture.repositories.AirportRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class AirportService {
     private final AirportRepository airportRepository;
+
+    public AirportService(AirportRepository airportRepository) {
+        this.airportRepository = airportRepository;
+    }
 
     public List<AirportResponse> getAll() {
         List<Airport> airports = airportRepository.findAll();
@@ -40,7 +42,8 @@ public class AirportService {
     }
 
     public Airport findById(Long id){
-        return airportRepository.findById(id).orElseThrow(()-> new AirportException(AirportException.AIRPORT_NOT_FOUND));
+        return airportRepository.findById(id)
+                .orElseThrow(()-> new AirportException(AirportException.AIRPORT_NOT_FOUND));
     }
 
     private void checkIfAirportExists(AirportRequest airportRequest) {
