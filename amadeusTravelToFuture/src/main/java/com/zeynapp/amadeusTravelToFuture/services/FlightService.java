@@ -71,8 +71,6 @@ public class FlightService {
         flight.setPrice(flightUpdateRequest.getPrice());
 
         checkDepartureDateTimeAndReturnDateTime(flight);
-        System.out.println("getReturnDateTime: " + flight.getReturnDateTime());
-        System.out.println("getDepartureDateTime: " + flight.getDepartureDateTime());
         return getFlightResponse(flightRepository.save(flight));
     }
 
